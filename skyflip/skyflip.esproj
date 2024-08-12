@@ -10,9 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\assets\" />
-    <Folder Include="src\pages\home\" />
-    <Folder Include="src\pages\bazaar\" />
-    <Folder Include="src\pages\forge\" />
     <Folder Include="src\utils\" />
   </ItemGroup>
 </Project>
