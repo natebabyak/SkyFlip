@@ -4,11 +4,9 @@ SkyFlip is the best website for real-time Hypixel SkyBlock data analysis designe
 
 # Features
 
-* Bazaar Flipper:
-    * Shows the best items to flip on the bazaar
-    * Usage:
-        * Click the buttons to select your bazaar tax rate
-        * Click the table headers to change how the data is sorted
+## Bazaar Flipper
+
+The**Bazaar Flipper**shows the best items to flip on the bazaar using the current 
 
 # Upcoming Features
 
