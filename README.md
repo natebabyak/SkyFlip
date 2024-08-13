@@ -29,3 +29,5 @@ These features are in-progress or planned.
 # Links
 
 * [SkyFlip](https://skyflip.net)
+* [Hypixel API](https://api.hypixel.net)
+* [GitHub](https://github.com/natebabyak/SkyFlip)
