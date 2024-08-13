@@ -4,7 +4,7 @@ SkyFlip is the best website for real-time Hypixel SkyBlock data analysis designe
 
 # Features
 
-These features have been released but may be subject to changes in the future.
+These features have been released but are subject to changes.
 
 ## Bazaar Flipper
 
@@ -12,8 +12,20 @@ The **Bazaar Flipper** shows the best items to flip on the Bazaar.
 
 ### Usage
 
+
+
 # Upcoming Features
 
-These features have not been released but their development is in-progress.
+These features are in-progress or planned. 
 
-## Auction House Flipper
+* Auction House Flipper
+* Crafting Calculator
+* Fann Calculator
+* Forge Calculator
+* Frozen Corpses Calculator
+* Kat Calculator
+* Pet Calculator
+
+# Links
+
+* [SkyFlip](https://skyflip.net)
