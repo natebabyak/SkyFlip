@@ -4,5 +4,6 @@ The best website for real-time Hypixel SkyBlock data analysis for maximizing pro
 
 # Features
 - Bazaar Flipper
-    - Shoes the best items to 
-- 
+- The Forge Flipper
+- Frozen Corpses Calculator
+- Pet-Crafting Calculator
