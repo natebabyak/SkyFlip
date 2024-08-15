@@ -6,27 +6,28 @@ import { useState, useEffect } from "react"
 export default function Bazaar() {
   const [bazaarData, setBazaarData] = useState(null)
   const [itemsData, setItemsData] = useState(null)
-  const [bazaarTax, setBazaarTax] = useState(0.01125)
-  const [sortDirection, setSortDirection] = useState("descending")
-  const [sortCriteria]
 
-  async function fetchBazaarData() {
-    const response = await fetch("https://api.hypixel.net/v2/skyblock/bazaar")
-    const data = await response.json()
-    setBazaarData(data)
+  const tax: 0.01 | 0.01125 | 0.0125 = 0.01125
+
+  async function getBazaarData() {
+    const url = "https://api.hypixel.net/v2/skyblock/bazaar"
+    try {
+      const response = await fetch(url)
+      const json = await response.json()
+
+      if (json.success === false) throw json.cause
+
+      setBazaarData(json)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
-  async function fetchItemsData() {
-    const response = await fetch("https://api.hypixel.net/v2/resources/skyblock/items")
-    const data = await response.json()
-    setItemsData(data)
+  function refreshBazaarData() {
+    useEffect(() => {
+      getBazaarData()
+    }, [])
   }
-
-  useEffect(() => {
-    fetchBazaarData()
-  }, [])
-
-  fetchItemsData()
 
   const headers = [
     "Item",
@@ -36,8 +37,6 @@ export default function Bazaar() {
     "Flips/h",
     "Coins/h"
   ]
-
-  const data = 
 
   return (
     <>
