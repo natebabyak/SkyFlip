@@ -1,6 +1,4 @@
 export default function formatNumber(number: number): string {
-  if (number == null) return "N/A"
-
   const abs = Math.abs(number);
   const sign = number < 0 ? "-" : ""
 
