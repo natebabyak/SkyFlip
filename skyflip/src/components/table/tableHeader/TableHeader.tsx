@@ -1,5 +1,5 @@
 interface TableHeaderProps {
-  headers: string[]
+  headers: string[];
 }
 
 export default function TableHeader({ headers }: TableHeaderProps) {

@@ -1,7 +1,23 @@
 const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
 
-export default function formatName(id: string, items: { id: string, name: string }[]): string {
-  const itemName = items[id] || id;
+interface ItemsData {
+  success: boolean;
+  lastUpdated: number;
+  items: {
+    material: string;
+    durability: number;
+    skin: string
+    name: string;
+    category: string;
+    tier: string;
+    npc_sell_price: string;
+    id: string;
+  }[];
+}
+
+export default function formatName(id: string, itemsData: ItemsData): string {
+  const item = itemsData.items.find((item) => item.id === id);
+  const itemName = item ? item.name : id;
 
   if (itemName.startsWith("ENCHANTMENT_")) {
     const match = id.match(/^ENCHANTMENT(?:_ULTIMATE)?_(.+)_(\d+)$/);

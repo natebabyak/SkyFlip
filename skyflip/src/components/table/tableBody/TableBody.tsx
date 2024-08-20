@@ -1,5 +1,5 @@
 interface TableBodyProps {
-  data: string[]
+  data: { [key: string]: string }[];
 }
 
 export default function TableBody({ data }: TableBodyProps) {

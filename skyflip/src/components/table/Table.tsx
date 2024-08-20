@@ -1,9 +1,9 @@
-import TableHeader from "./tableHeader/TableHeader.tsx"
-import TableBody from "./tableBody/TableBody.tsx"
+import TableHeader from "./tableHeader/TableHeader.tsx";
+import TableBody from "./tableBody/TableBody.tsx";
 
 interface TableProps {
-  headers: string[]
-  data: string[]
+  headers: string[];
+  data: { [key: string]: string }[];
 }
 
 export default function Table({ headers, data }: TableProps) {

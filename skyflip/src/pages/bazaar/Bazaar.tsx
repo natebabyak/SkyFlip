@@ -5,108 +5,83 @@ import Table from "../../components/table/Table.tsx";
 import formatCoins from "../../utils/formatCoins.ts";
 import formatName from "../../utils/formatName.ts";
 import formatNumber from "../../utils/formatNumber.ts";
-import Loading from "../../components/loading/Loading.tsx";
 
 const HOURS_IN_A_WEEK = 168;
 
-interface Item {
-  id: string,
-  name: string
-}
-
-interface Product {
-  product_id: string,
-  sell_summary: {
-    amount: number,
-    pricePerUnit: number,
-    orders: number
-  }[],
-  buy_summary: {
-    amount: number,
-    pricePerUnit: number,
-    orders: number
-  }[]
-  quick_status: {
-    productId: string,
-    sellPrice: number,
-    sellVolume: number,
-    sellMovingWeek: number,
-    sellOrders: number,
-    buyPrice: number,
-    buyVolume: number,
-    buyMovingWeek: number,
-    buyOrders: number
-  }
-}
-
 interface BazaarData {
-  success: boolean
-  lastUpdated: number
-  products: Product[]
+  success: boolean;
+  lastUpdated: number;
+  products: {
+    product_id: string;
+    sell_summary: {
+      amount: number;
+      pricePerUnit: number;
+      orders: number;
+    }[];
+    buy_summary: {
+      amount: number;
+      pricePerUnit: number;
+      orders: number;
+    }[];
+    quick_status: {
+      productId: string;
+      sellPrice: number;
+      sellVolume: number;
+      sellMovingWeek: number;
+      sellOrders: number;
+      buyPrice: number;
+      buyVolume: number;
+      buyMovingWeek: number;
+      buyOrders: number;
+    }
+  }[];
 }
 
-type BazaarDataOrNull = BazaarData | null;
+interface ItemsData {
+  success: boolean;
+  lastUpdated: number;
+  items: {
+    material: string;
+    durability: number;
+    skin: string
+    name: string;
+    category: string;
+    tier: string;
+    npc_sell_price: string;
+    id: string;
+  }[];
+}
 
 export default function Bazaar() {
-  const [bazaarData, setBazaarData] = useState<BazaarDataOrNull>(null);
-  const [itemsData, setItemsData] = useState(null);
+  const [bazaarData, setBazaarData] = useState<BazaarData | null>(null);
+  const [itemsData, setItemsData] = useState<ItemsData | null>(null);
 
   const tax: 0.01 | 0.01125 | 0.0125 = 0.01125;
   const sortDirection: -1 | 1 = -1;
   const sortColumn: "productId" | "instaBuy" | "instaSell" | "profitPerFlip" | "flipsPerHour" | "profitPerHour" = "profitPerHour";
 
-  async function refreshBazaarData() {
+  async function fetchBazaarData() {
     const url = "https://api.hypixel.net/v2/skyblock/bazaar";
-
-    try {
-      const response = await fetch(url);
-      const json = await response.json();
-
-      if (json.success === false) {
-        throw json.cause;
-      } else {
-        setBazaarData(json);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    const response = await fetch(url);
+    const json = await response.json();
+    setBazaarData(json);
   }
 
-  async function refreshItemsData() {
-    const url = "https://api.hypixel.net/v2/reources/skyblock/items";
-
-    try {
-      const response = await fetch(url);
-      const json = await response.json();
-
-      if (json.success === false) {
-        throw json.cause;
-      } else {
-        setItemsData(json);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  async function fetchItemsData() {
+    const url = "https://api.hypixel.net/v2/resources/skyblock/items";
+    const response = await fetch(url);
+    const json = await response.json();
+    setItemsData(json);
   }
 
   useEffect(() => {
-    refreshBazaarData();
-    refreshItemsData();
-  }, [])
+    fetchBazaarData();
+    fetchItemsData();
 
-  if (!bazaarData) {
-    const url = "https://api.hypixel.net/v2/skyblock/bazaar";
-    return <Loading name="Hypixel Public API" url={url} />;
-  } else if (!itemsData) {
-    const url = "https://api.hypixel.net/v2/reources/skyblock/items";
-    return <Loading name="Hypixel Public API" url={url} />;
-  }
-
-  const interval = setInterval(refreshBazaarData, 60000);
-
-  
-  const items: Item[] = Object.fromEntries(itemsData.map((item: Item) => [item.id, item.name]));
-  clearInterval(interval);
+    const interval = setInterval(fetchBazaarData, 60000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const headers = [
     "Item",
@@ -117,7 +92,7 @@ export default function Bazaar() {
     "Coins/h"
   ]
 
-  const products = Object.values(bazaarData.products).map((product) => {
+  const products = bazaarData ? Object.values(bazaarData.products).map((product) => {
     const { product_id, buy_summary, sell_summary, quick_status } = product;
     const { buyMovingWeek, sellMovingWeek } = quick_status;
 
@@ -135,7 +110,7 @@ export default function Bazaar() {
       : null;
 
     const flipsPerHour = buyMovingWeek && sellMovingWeek
-      ? 1 / (1 / (buyMovingWeek * HOURS_IN_A_WEEK) + 1 / (sellMovingWeek * HOURS_IN_A_WEEK))
+      ? 1 / (1 / (buyMovingWeek / HOURS_IN_A_WEEK) + 1 / (sellMovingWeek / HOURS_IN_A_WEEK))
       : null;
 
     const profitPerHour = profitPerFlip && flipsPerHour
@@ -150,27 +125,29 @@ export default function Bazaar() {
       flipsPerHour,
       profitPerHour
     };
-  }).sort((a, b) => (a.sortColumn || 0) - (b.sortColumn || 0) * sortDirection;
+  }).sort((a, b) => {
+    const aValue = a[sortColumn] ?? 0;
+    const bValue = b[sortColumn] ?? 0;
+    return (aValue - bValue) * sortDirection;
+  }) : null;
 
-  const data = products.map((product) => {
+  const data = products ? products.map((product) => {
     const { productId, instaBuy, instaSell, profitPerFlip, flipsPerHour, profitPerHour } = product;
     return {
-      formattedName: formatName(productId, items),
+      formattedName: itemsData ? formatName(productId, itemsData) : productId,
       formattedInstaBuy: instaBuy ? formatCoins(instaBuy) : "N/A",
       formattedInstaSell: instaSell ? formatCoins(instaSell) : "N/A",
       formattedProfitPerFlip: profitPerFlip ? formatCoins(profitPerFlip) : "N/A",
       formattedFlipsPerHour: flipsPerHour ? formatNumber(flipsPerHour) : "N/A",
       formattedProfitPerHour: profitPerHour ? formatCoins(profitPerHour) : "N/A"
     };
-  });
-
-
+  }) : null;
 
   return (
     <>
       <Header />
       <h1>Bazaar</h1>
-      <Table headers={headers} data={data} />
+      {data ? <Table headers={headers} data={data} />: "Loading..."}
       <Footer />
     </>
   )
