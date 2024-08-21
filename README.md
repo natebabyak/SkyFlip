@@ -12,6 +12,8 @@ The **Bazaar Flipper** shows the best items to flip on the Bazaar.
 
 #### Usage
 
+* Tax
+
 
 
 ## Upcoming Features
