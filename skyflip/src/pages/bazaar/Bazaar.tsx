@@ -8,57 +8,68 @@ import formatNumber from "../../utils/formatNumber.ts";
 
 const HOURS_IN_A_WEEK = 168;
 
+interface SellSummary {
+  amount: number;
+  pricePerUnit: number;
+  orders: number;
+}
+
+interface BuySummary {
+  amount: number;
+  pricePerUnit: number;
+  orders: number;
+}
+
+interface Product {
+  product_id: string;
+  sell_summary: SellSummary[];
+  buy_summary: BuySummary[];
+  quick_status: {
+    productId: string;
+    sellPrice: number;
+    sellVolume: number;
+    sellMovingWeek: number;
+    sellOrders: number;
+    buyPrice: number;
+    buyVolume: number;
+    buyMovingWeek: number;
+    buyOrders: number;
+  }
+}
+
 interface BazaarData {
   success: boolean;
   lastUpdated: number;
-  products: {
-    product_id: string;
-    sell_summary: {
-      amount: number;
-      pricePerUnit: number;
-      orders: number;
-    }[];
-    buy_summary: {
-      amount: number;
-      pricePerUnit: number;
-      orders: number;
-    }[];
-    quick_status: {
-      productId: string;
-      sellPrice: number;
-      sellVolume: number;
-      sellMovingWeek: number;
-      sellOrders: number;
-      buyPrice: number;
-      buyVolume: number;
-      buyMovingWeek: number;
-      buyOrders: number;
-    }
-  }[];
+  products: Product[];
+}
+
+interface Item {
+  material: string;
+  durability: number;
+  skin: string
+  name: string;
+  category: string;
+  tier: string;
+  npc_sell_price: string;
+  id: string;
 }
 
 interface ItemsData {
   success: boolean;
   lastUpdated: number;
-  items: {
-    material: string;
-    durability: number;
-    skin: string
-    name: string;
-    category: string;
-    tier: string;
-    npc_sell_price: string;
-    id: string;
-  }[];
+  items: Item[];
 }
+
+type SortColumn = "name" | "instaBuy" | "instaSell" | "profitPerFlip" | "flipsPerHour" | "profitPerHour";
+type SortDirection = "ascending" | "descending";
+type Tax = 0.01 | 0.01125 | 0.0125;
 
 export default function Bazaar() {
   const [bazaarData, setBazaarData] = useState<BazaarData | null>(null);
   const [itemsData, setItemsData] = useState<ItemsData | null>(null);
-
-  const tax: 0.01 | 0.01125 | 0.0125 = 0.01125;
-  const sortDirection: -1 | 1 = -1;
-  const sortColumn: "productId" | "instaBuy" | "instaSell" | "profitPerFlip" | "flipsPerHour" | "profitPerHour" = "profitPerHour";
+  const [sortColumn, setSortColumn] = useState<SortColumn>("profitPerHour");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("descending");
+  const [tax, setTax] = useState<Tax>(0.01125);
 
   async function fetchBazaarData() {
     const url = "https://api.hypixel.net/v2/skyblock/bazaar";
@@ -90,7 +101,7 @@ export default function Bazaar() {
     "Profit",
     "Flips/h",
     "Coins/h"
-  ]
+  ];
 
   const products = bazaarData ? Object.values(bazaarData.products).map((product) => {
     const { product_id, buy_summary, sell_summary, quick_status } = product;
@@ -147,7 +158,6 @@ export default function Bazaar() {
     <>
       <Header />
       <h1>Bazaar</h1>
-      {data ? <Table headers={headers} data={data} />: "Loading..."}
       <Footer />
     </>
   )
