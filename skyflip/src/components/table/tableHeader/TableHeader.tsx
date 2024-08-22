@@ -1,15 +1,16 @@
-interface TableHeaderProps {
-  headers: string[];
-}
+import React from "react";
+import "./tableHeader.css";
 
-export default function TableHeader({ headers }: TableHeaderProps) {
+type Headers = React.ReactNode[];
+
+export default function TableHeader(headers: Headers): React.ReactNode {
   return (
     <thead>
       <tr>
         {headers.map((header, headerIndex) => (
           <th key={headerIndex}>{header}</th>
-        ))}
+        ))};
       </tr>
     </thead>
-  )
+  );
 }
