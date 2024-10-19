@@ -8,8 +8,10 @@ interface CopyButtonProps {
 
 export default function CopyButton({ buttonText, copyText }: CopyButtonProps): React.ReactNode {
   return (
-    <button onClick={() => navigator.clipboard.writeText(copyText)}>
-      <i className="material-icons">content_copy</i> {buttonText}
-    </button>
+    <>
+      <button onClick={() => navigator.clipboard.writeText(copyText)}>
+        {buttonText} <i className="material-icons">content_copy</i>
+      </button>
+    </>
   );
 }
