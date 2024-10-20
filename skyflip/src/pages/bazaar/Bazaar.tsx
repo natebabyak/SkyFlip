@@ -87,6 +87,10 @@ export default function Bazaar() {
   useEffect(() => {
     fetchBazaarData();
     fetchItemsData();
+
+    const interval = setInterval(fetchBazaarData, 60000);
+
+    return () => clearInterval(interval);
   }, []);
 
   function handleSort(column: SortColumn): void {
