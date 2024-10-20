@@ -1,18 +1,18 @@
-import React from "react";
+import { ReactNode } from "react";
 import "./sortButton.css";
 
-type ButtonState = "down" | "up" | "circle";
+type SortButtonState = "down" | "up" | "down_circle";
 
 interface SortButtonProps {
   handleClick: () => void;
   text: string;
-  state: ButtonState;
+  state: SortButtonState;
 }
 
-export default function SortButton({ handleClick, text, state }: SortButtonProps): React.ReactNode {
+export default function SortButton({ handleClick, text, state }: SortButtonProps): ReactNode {
   return (
     <button onClick={handleClick}>
-      {text} {state === "down" ? <i className="material-icons">arrow_drop_down</i> : state === "up" ? <i className="material-icons">arrow_drop_up</i> : <i className="material-icons">arrow_drop_down_circle</i>}
+      {text} <i className="material-icons">arrow_drop_{state}</i>
     </button>
   );
 }

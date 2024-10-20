@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactNode } from "react";
 import "./copyButton.css";
 
 interface CopyButtonProps {
@@ -6,7 +6,7 @@ interface CopyButtonProps {
   copyText: string;
 }
 
-export default function CopyButton({ buttonText, copyText }: CopyButtonProps): React.ReactNode {
+export default function CopyButton({ buttonText, copyText }: CopyButtonProps): ReactNode {
   return (
     <>
       <button onClick={() => navigator.clipboard.writeText(copyText)}>

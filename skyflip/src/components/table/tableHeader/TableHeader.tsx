@@ -1,9 +1,9 @@
-import React from "react";
+import { ReactNode } from "react";
 import "./tableHeader.css";
 
-type Headers = React.ReactNode[];
+type Headers = ReactNode[];
 
-export default function TableHeader({ headers }: { headers: Headers }): React.ReactNode {
+export default function TableHeader({ headers }: { headers: Headers }): ReactNode {
   return (
     <thead>
       <tr>

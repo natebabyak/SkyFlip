@@ -1,8 +1,8 @@
-import React from "react";
+import { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import "./header.css";
 
-export default function Header(): React.ReactNode {
+export default function Header(): ReactNode {
   return (
     <header>
       <nav>

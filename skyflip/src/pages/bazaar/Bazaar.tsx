@@ -60,6 +60,7 @@ interface ItemsData {
 
 type SortColumn = "instaBuy" | "instaSell" | "profitPerFlip" | "flipsPerHour" | "profitPerHour";
 type SortDirection = -1 | 1;
+type SortButtonState = "down" | "up" | "down_circle";
 type Tax = 0.01 | 0.01125 | 0.0125;
 
 export default function Bazaar() {
@@ -75,7 +76,7 @@ export default function Bazaar() {
     const json = await response.json();
     setBazaarData(json);
   }
-
+  
   async function fetchItemsData() {
     const url = "https://api.hypixel.net/v2/resources/skyblock/items";
     const response = await fetch(url);
@@ -88,22 +89,58 @@ export default function Bazaar() {
     fetchItemsData();
   }, []);
 
-  async function handleSort(columnClicked: SortColumn) {
-    if (sortColumn === columnClicked) {
-      setSortDirection(sortDirection === -1 ? 1 : -1);
+  function handleSort(column: SortColumn): void {
+    if (sortColumn === column) {
+      if (sortDirection === -1) {
+        setSortDirection(1);
+      } else {
+        setSortDirection(-1);
+      }
     } else {
-      setSortColumn(columnClicked);
+      setSortColumn(column);
       setSortDirection(-1);
+    }
+  }
+
+  function getSortButtonState(column: SortColumn): SortButtonState {
+    if (sortColumn === column) {
+      if (sortDirection === -1) {
+        return "down";
+      } else {
+        return "up";
+      }
+    } else {
+      return "down_circle";
     }
   }
 
   const headers = [
     "Item",
-    <SortButton handleClick={() => handleSort("instaBuy")} text="Insta-Buy" state={sortColumn === "instaBuy" ? sortDirection === -1 ? "down" : "up" : "circle"} />,
-    <SortButton handleClick={() => handleSort("instaSell")} text="Insta-Sell" state={sortColumn === "instaSell" ? sortDirection === -1 ? "down" : "up" : "circle"} />,
-    <SortButton handleClick={() => handleSort("profitPerFlip")} text="Profit" state={sortColumn === "profitPerFlip" ? sortDirection === -1 ? "down" : "up" : "circle"} />,
-    <SortButton handleClick={() => handleSort("flipsPerHour")} text="Flips/h" state={sortColumn === "flipsPerHour" ? sortDirection === -1 ? "down" : "up" : "circle"} />,
-    <SortButton handleClick={() => handleSort("profitPerHour")} text="Coins/h" state={sortColumn === "profitPerHour" ? sortDirection === -1 ? "down" : "up" : "circle"} />
+    <SortButton
+      handleClick={() => handleSort("instaBuy")}
+      text="Insta-Buy"
+      state={getSortButtonState("instaBuy")}
+    />,
+    <SortButton
+      handleClick={() => handleSort("instaSell")}
+      text="Insta-Sell"
+      state={getSortButtonState("instaSell")}
+    />,
+    <SortButton
+      handleClick={() => handleSort("profitPerFlip")}
+      text="Profit"
+      state={getSortButtonState("profitPerFlip")}
+    />,
+    <SortButton
+      handleClick={() => handleSort("flipsPerHour")}
+      text="Flips/h"
+      state={getSortButtonState("flipsPerHour")}
+    />,
+    <SortButton
+      handleClick={() => handleSort("profitPerHour")}
+      text="Coins/h"
+      state={getSortButtonState("profitPerHour")}
+    />
   ];
 
   const products = bazaarData ? Object.values(bazaarData.products).map((product) => {

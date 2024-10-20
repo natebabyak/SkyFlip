@@ -1,13 +1,13 @@
-import React from "react";
+import { ReactNode } from "react";
 import TableBody from "./tableBody/TableBody.tsx";
 import TableHeader from "./tableHeader/TableHeader.tsx";
 
 interface TableProps {
-  headers: React.ReactNode[];
-  data: React.ReactNode[][];
+  headers: ReactNode[];
+  data: ReactNode[][];
 }
 
-export default function Table({ headers, data }: TableProps): React.ReactNode {
+export default function Table({ headers, data }: TableProps): ReactNode {
   return (
     <table>
       <TableHeader headers={headers} />
