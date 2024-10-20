@@ -7,6 +7,7 @@ import formatName from "../../utils/formatName.ts";
 import formatNumber from "../../utils/formatNumber.ts";
 import CopyButton from "../../components/copyButton/CopyButton.tsx";
 import SortButton from "../../components/sortButton/SortButton.tsx";
+import TaxButton from "../../components/taxButton/TaxButton.tsx";
 
 const HOURS_IN_A_WEEK = 168;
 
@@ -187,6 +188,11 @@ export default function Bazaar() {
     <>
       <Header />
       <h1>Bazaar</h1>
+      <ul>
+        <li><TaxButton handleClick={() => setTax(0.01)} tax={0.01} isDisabled={tax === 0.01} /></li>
+        <li><TaxButton handleClick={() => setTax(0.01125)} tax={0.01125} isDisabled={tax === 0.01125} /></li>
+        <li><TaxButton handleClick={() => setTax(0.0125)} tax={0.0125} isDisabled={tax === 0.0125} /></li>
+      </ul>
       <Table headers={headers} data={data} />
       <Footer />
     </>
