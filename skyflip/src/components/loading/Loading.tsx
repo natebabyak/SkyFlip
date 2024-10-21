@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import "./loading.css";
+import { ReactNode } from 'react';
+import './loading.css';
 
 export default function Loading(): ReactNode {
   return (

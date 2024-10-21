@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import "./tableBody.css";
+import { ReactNode } from 'react';
+import './tableBody.css';
 
 type Data = ReactNode[][];
 

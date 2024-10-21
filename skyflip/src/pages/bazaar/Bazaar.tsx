@@ -1,29 +1,24 @@
-import { useState, useContext, ReactNode } from 'react';
+import { ReactNode, useContext, useState } from 'react';
+import CopyButton from '../../components/copyButton/CopyButton.tsx';
 import Footer from '../../components/footer/Footer.tsx';
 import Header from '../../components/header/Header.tsx';
-import Table from '../../components/table/Table.tsx';
-import formatCoins from '../../utils/formatCoins.ts';
-import formatName from '../../utils/formatName.ts';
-import formatNumber from '../../utils/formatNumber.ts';
-import CopyButton from '../../components/copyButton/CopyButton.tsx';
 import Loading from '../../components/loading/Loading.tsx';
+import Table from '../../components/table/Table.tsx';
 import TaxButtons from '../../components/taxButtons/TaxButtons.tsx';
 import BazaarContext from '../../context/BazaarContext.tsx';
 import ItemsContext from '../../context/ItemsContext.tsx';
+import formatCoins from '../../utils/formatCoins.ts';
+import formatName from '../../utils/formatName.ts';
+import formatNumber from '../../utils/formatNumber.ts';
 
 const HOURS_PER_WEEK = 168;
 
 type Tax = 0.01 | 0.01125 | 0.0125;
 
 export default function Bazaar(): ReactNode {
-  const bazaarContext = useContext(BazaarContext);
-  const itemsContext = useContext(ItemsContext);
+  const bazaarData = useContext(BazaarContext);
+  const itemsData = useContext(ItemsContext);
   const [tax, setTax] = useState<Tax>(0.01125);
-
-  if (!bazaarContext || !itemsContext) return <Loading />;
-
-  const { bazaarData } = bazaarContext;
-  const { itemsData } = itemsContext;
 
   if (!bazaarData || !itemsData) return <Loading />;
 
@@ -39,37 +34,40 @@ export default function Bazaar(): ReactNode {
   const products = Object.values(bazaarData.products).map((product) => {
     const { product_id, buy_summary, sell_summary, quick_status } = product;
     const { buyMovingWeek, sellMovingWeek } = quick_status;
-    const productId = product_id;
-    const instaBuy = buy_summary.length > 0 ? buy_summary[0].pricePerUnit : null;
-    const instaSell = sell_summary.length > 0 ? sell_summary[0].pricePerUnit : null;
-    const profitPerFlip = instaBuy && instaSell ? (instaBuy - 0.1) * (1 - tax) - (instaSell + 0.1) : null;
-    const flipsPerHour = buyMovingWeek && sellMovingWeek ? 1 / (1 / (buyMovingWeek / HOURS_PER_WEEK) + 1 / (sellMovingWeek / HOURS_PER_WEEK)) : null;
-    const profitPerHour = profitPerFlip && flipsPerHour ? profitPerFlip * flipsPerHour : null;
 
-    return {
-      productId,
-      instaBuy,
-      instaSell,
-      profitPerFlip,
-      flipsPerHour,
-      profitPerHour
-    };
-  }).sort((a, b) => ((b.profitPerHour || 0) - (a.profitPerHour || 0)));
+    if (buy_summary.length > 0 && sell_summary.length > 0) {
+      const instaBuy = buy_summary[0].pricePerUnit;
+      const instaSell = sell_summary[0].pricePerUnit;
+      const profitPerFlip = (instaBuy - 0.1) * (1 - tax) - (instaSell + 0.1);
+      const flipsPerHour = 1 / (1 / (buyMovingWeek / HOURS_PER_WEEK) + 1 / (sellMovingWeek / HOURS_PER_WEEK));
+      const profitPerHour = profitPerFlip * flipsPerHour;
+
+      return {
+        product_id,
+        instaBuy,
+        instaSell,
+        profitPerFlip,
+        flipsPerHour,
+        profitPerHour
+      };
+    }
+    return null;
+  }).filter((product) => product !== null).sort((a, b) => b.profitPerHour - a.profitPerHour);
 
   const data = products.map((product) => {
-    const { productId, instaBuy, instaSell, profitPerFlip, flipsPerHour, profitPerHour } = product;
-    const formattedName = formatName(productId, itemsData);
+    const { product_id, instaBuy, instaSell, profitPerFlip, flipsPerHour, profitPerHour } = product;
+    const name = formatName(product_id, itemsData);
 
     return [
-      <CopyButton buttonText={formattedName} copyText={`/bz ${formattedName}`} />,
-      instaBuy ? formatCoins(instaBuy) : "N/A",
-      instaSell ? formatCoins(instaSell) : "N/A",
-      profitPerFlip ? formatCoins(profitPerFlip) : "N/A",
-      flipsPerHour ? formatNumber(flipsPerHour) : "N/A",
-      profitPerHour ? formatCoins(profitPerHour) : "N/A"
+      <CopyButton buttonText={name} copyText={`/bz ${name}`} />,
+      formatCoins(instaBuy),
+      formatCoins(instaSell),
+      formatCoins(profitPerFlip),
+      formatNumber(flipsPerHour),
+      formatCoins(profitPerHour)
     ];
-  }).filter((row) => row[5] !== "N/A");
-
+  }); 
+                       
   return (
     <>
       <Header />
@@ -78,5 +76,5 @@ export default function Bazaar(): ReactNode {
       <Table headers={headers} data={data} />
       <Footer />
     </>
-  )
+  );
 }

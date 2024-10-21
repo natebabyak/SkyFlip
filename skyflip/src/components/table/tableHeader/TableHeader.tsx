@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import "./tableHeader.css";
+import { ReactNode } from 'react';
+import './tableHeader.css';
 
 type Headers = ReactNode[];
 

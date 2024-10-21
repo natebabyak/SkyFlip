@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import "./copyButton.css";
+import { ReactNode } from 'react';
+import './copyButton.css';
 
 interface CopyButtonProps {
   buttonText: string;
@@ -8,10 +8,8 @@ interface CopyButtonProps {
 
 export default function CopyButton({ buttonText, copyText }: CopyButtonProps): ReactNode {
   return (
-    <>
-      <button onClick={() => navigator.clipboard.writeText(copyText)}>
-        {buttonText} <i className="material-icons">content_copy</i>
-      </button>
-    </>
+    <button onClick={() => navigator.clipboard.writeText(copyText)}>
+      {buttonText} <i className='material-icons'>content_copy</i>
+    </button>
   );
 }

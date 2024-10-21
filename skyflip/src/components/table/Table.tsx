@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
-import TableBody from "./tableBody/TableBody.tsx";
-import TableHeader from "./tableHeader/TableHeader.tsx";
+import { ReactNode } from 'react';
+import TableBody from './tableBody/TableBody.tsx';
+import TableHeader from './tableHeader/TableHeader.tsx';
 
 interface TableProps {
   headers: ReactNode[];

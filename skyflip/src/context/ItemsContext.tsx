@@ -1,4 +1,4 @@
-import { Dispatch, FC, ReactNode, SetStateAction, createContext, useEffect, useState } from 'react';
+import { ReactNode, createContext, useEffect, useState } from 'react';
 
 interface ItemsData {
   success: boolean;
@@ -6,7 +6,7 @@ interface ItemsData {
   items: {
     material: string;
     durability: number;
-    skin: string
+    skin: string;
     name: string;
     category: string;
     tier: string;
@@ -15,29 +15,25 @@ interface ItemsData {
   }[];
 }
 
-interface ItemsContextType {
-  itemsData: ItemsData | null;
-  setItemsData: Dispatch<SetStateAction<ItemsData | null>>;
-}
+const ItemsContext = createContext<ItemsData | null>(null);
 
-const ItemsContext = createContext<ItemsContextType | null>(null);
-
-export const ItemsProvider: FC<{ children: ReactNode }> = ({ children }) => {
+export function ItemsProvider({ children }: { children: ReactNode }): JSX.Element {
   const [itemsData, setItemsData] = useState<ItemsData | null>(null);
 
-  async function fetchItemsData() {
+  async function fetchItemsData(): Promise<void> {
+    if (itemsData) return;
     const url = "https://api.hypixel.net/v2/resources/skyblock/items";
     const response = await fetch(url);
-    const json = await response.json();
-    setItemsData(json);
+    const data: ItemsData = await response.json();
+    setItemsData(data);
   }
 
   useEffect(() => {
     fetchItemsData();
-  }, []);
+  });
 
   return (
-    <ItemsContext.Provider value={{ itemsData, setItemsData }}>
+    <ItemsContext.Provider value={itemsData}>
       {children}
     </ItemsContext.Provider>
   );

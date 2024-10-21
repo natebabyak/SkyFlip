@@ -1,4 +1,4 @@
-import { Dispatch, FC, ReactNode, SetStateAction, createContext, useEffect, useState } from 'react';
+import { ReactNode, createContext, useEffect, useState } from 'react';
 
 interface BazaarData {
   success: boolean;
@@ -29,21 +29,16 @@ interface BazaarData {
   }[];
 }
 
-interface BazaarContextType {
-  bazaarData: BazaarData | null;
-  setBazaarData: Dispatch<SetStateAction<BazaarData | null>>;
-}
+const BazaarContext = createContext<BazaarData | null>(null);
 
-const BazaarContext = createContext<BazaarContextType | null>(null);
-
-export const BazaarProvider: FC<{ children: ReactNode }> = ({ children }) => {
+export function BazaarProvider({ children }: { children: ReactNode }): JSX.Element {
   const [bazaarData, setBazaarData] = useState<BazaarData | null>(null);
 
-  async function fetchBazaarData() {
+  async function fetchBazaarData(): Promise<void> {
     const url = "https://api.hypixel.net/v2/skyblock/bazaar";
     const response = await fetch(url);
-    const json = await response.json();
-    setBazaarData(json);
+    const data: BazaarData = await response.json();
+    setBazaarData(data);
   }
 
   useEffect(() => {
@@ -53,7 +48,7 @@ export const BazaarProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }, []);
 
   return (
-    <BazaarContext.Provider value={{ bazaarData, setBazaarData }}>
+    <BazaarContext.Provider value={bazaarData}>
       {children}
     </BazaarContext.Provider>
   );
