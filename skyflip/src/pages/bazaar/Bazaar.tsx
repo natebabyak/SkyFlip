@@ -6,70 +6,57 @@ import formatCoins from "../../utils/formatCoins.ts";
 import formatName from "../../utils/formatName.ts";
 import formatNumber from "../../utils/formatNumber.ts";
 import CopyButton from "../../components/copyButton/CopyButton.tsx";
-import SortButton from "../../components/sortButton/SortButton.tsx";
-import TaxButton from "../../components/taxButton/TaxButton.tsx";
 
-const HOURS_IN_A_WEEK = 168;
-
-interface Product {
-  product_id: string;
-  sell_summary: {
-    amount: number;
-    pricePerUnit: number;
-    orders: number;
-  }[];
-  buy_summary: {
-    amount: number;
-    pricePerUnit: number;
-    orders: number;
-  }[];
-  quick_status: {
-    productId: string;
-    sellPrice: number;
-    sellVolume: number;
-    sellMovingWeek: number;
-    sellOrders: number;
-    buyPrice: number;
-    buyVolume: number;
-    buyMovingWeek: number;
-    buyOrders: number;
-  };
-}
+const HOURS_PER_WEEK = 168;
+const TAX = 0.98875
 
 interface BazaarData {
   success: boolean;
   lastUpdated: number;
-  products: Product[];
-}
-
-interface Item {
-  material: string;
-  durability: number;
-  skin: string
-  name: string;
-  category: string;
-  tier: string;
-  npc_sell_price: string;
-  id: string;
+  products: {
+    product_id: string;
+    sell_summary: {
+      amount: number;
+      pricePerUnit: number;
+      orders: number;
+    }[];
+    buy_summary: {
+      amount: number;
+      pricePerUnit: number;
+      orders: number;
+    }[];
+    quick_status: {
+      productId: string;
+      sellPrice: number;
+      sellVolume: number;
+      sellMovingWeek: number;
+      sellOrders: number;
+      buyPrice: number;
+      buyVolume: number;
+      buyMovingWeek: number;
+      buyOrders: number;
+    };
+  }[];
 }
 
 interface ItemsData {
   success: boolean;
   lastUpdated: number;
-  items: Item[];
+  items: {
+    material: string;
+    durability: number;
+    skin: string
+    name: string;
+    category: string;
+    tier: string;
+    npc_sell_price: string;
+    id: string;
+  }[];
 }
-
-type SortColumn = "instaBuy" | "instaSell" | "profitPerFlip" | "flipsPerHour" | "profitPerHour";
-type SortDirection = -1 | 1;
-type SortButtonState = "down" | "up" | "down_circle";
-type Tax = 0.01 | 0.01125 | 0.0125;
 
 export default function Bazaar() {
   const [bazaarData, setBazaarData] = useState<BazaarData | null>(null);
   const [itemsData, setItemsData] = useState<ItemsData | null>(null);
-  const [sortColumn, setSortColumn] = useState<SortColumn>("profitPerHour");
-  const [sortDirection, setSortDirection] = useState<SortDirection>(-1);
-  const [tax, setTax] = useState<Tax>(0.01125);
 
   async function fetchBazaarData() {
     const url = "https://api.hypixel.net/v2/skyblock/bazaar";
@@ -77,7 +64,7 @@ export default function Bazaar() {
     const json = await response.json();
     setBazaarData(json);
   }
-  
+
   async function fetchItemsData() {
     const url = "https://api.hypixel.net/v2/resources/skyblock/items";
     const response = await fetch(url);
@@ -89,75 +76,50 @@ export default function Bazaar() {
     fetchBazaarData();
     fetchItemsData();
 
-    const interval = setInterval(fetchBazaarData, 60000);
-
+    const interval = setInterval(fetchBazaarData, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  function handleSort(column: SortColumn): void {
-    if (sortColumn === column) {
-      if (sortDirection === -1) {
-        setSortDirection(1);
-      } else {
-        setSortDirection(-1);
-      }
-    } else {
-      setSortColumn(column);
-      setSortDirection(-1);
-    }
-  }
-
-  function getSortButtonState(column: SortColumn): SortButtonState {
-    if (sortColumn === column) {
-      if (sortDirection === -1) {
-        return "down";
-      } else {
-        return "up";
-      }
-    } else {
-      return "down_circle";
-    }
-  }
-
   const headers = [
     "Item",
-    <SortButton
-      handleClick={() => handleSort("instaBuy")}
-      text="Insta-Buy"
-      state={getSortButtonState("instaBuy")}
-    />,
-    <SortButton
-      handleClick={() => handleSort("instaSell")}
-      text="Insta-Sell"
-      state={getSortButtonState("instaSell")}
-    />,
-    <SortButton
-      handleClick={() => handleSort("profitPerFlip")}
-      text="Profit"
-      state={getSortButtonState("profitPerFlip")}
-    />,
-    <SortButton
-      handleClick={() => handleSort("flipsPerHour")}
-      text="Flips/h"
-      state={getSortButtonState("flipsPerHour")}
-    />,
-    <SortButton
-      handleClick={() => handleSort("profitPerHour")}
-      text="Coins/h"
-      state={getSortButtonState("profitPerHour")}
-    />
+    "Insta-Buy",
+    "Insta-Sell",
+    "Profit",
+    "Flips/h",
+    "Coins/h"
   ];
 
   const products = bazaarData ? Object.values(bazaarData.products).map((product) => {
     const { product_id, buy_summary, sell_summary, quick_status } = product;
     const { buyMovingWeek, sellMovingWeek } = quick_status;
-
     const productId = product_id;
-    const instaBuy = buy_summary.length > 0 ? buy_summary[0].pricePerUnit : null;
-    const instaSell = sell_summary.length > 0 ? sell_summary[0].pricePerUnit : null;
-    const profitPerFlip = instaBuy && instaSell ? (instaBuy - 0.1) * (1 - tax) - (instaSell + 0.1) : null;
-    const flipsPerHour = buyMovingWeek && sellMovingWeek ? 1 / (1 / (buyMovingWeek / HOURS_IN_A_WEEK) + 1 / (sellMovingWeek / HOURS_IN_A_WEEK)) : null;
-    const profitPerHour = profitPerFlip && flipsPerHour ? profitPerFlip * flipsPerHour : null;
+    const instaBuy = buy_summary.length > 0
+      ? buy_summary[0].pricePerUnit
+      : null;
+    const instaSell = sell_summary.length > 0
+      ? sell_summary[0].pricePerUnit
+      : null;
+    const sellPrice = instaBuy
+      ? instaBuy - 0.1
+      : null;
+    const buyPrice = instaSell
+      ? instaSell + 0.1
+      : null;
+    const profitPerFlip = sellPrice && buyPrice
+      ? sellPrice * TAX - buyPrice
+      : null;
+    const hoursPerPurchase = buyMovingWeek
+      ? 1 / (buyMovingWeek / HOURS_PER_WEEK)
+      : null;
+    const hoursPerSale = sellMovingWeek
+      ? 1 / (sellMovingWeek / HOURS_PER_WEEK)
+      : null;
+    const flipsPerHour = hoursPerPurchase && hoursPerSale
+      ? 1 / (hoursPerPurchase + hoursPerSale)
+      : null;
+    const profitPerHour = profitPerFlip && flipsPerHour
+      ? profitPerFlip * flipsPerHour
+      : null;
 
     return {
       productId,
@@ -167,13 +129,13 @@ export default function Bazaar() {
       flipsPerHour,
       profitPerHour
     };
-  }).sort((a, b) => ((a[sortColumn] || 0) - (b[sortColumn] || 0)) * sortDirection) : null;
+  }).sort((a, b) => ((b.profitPerHour || 0) - (a.profitPerHour || 0))) : null;
 
   const data = products ? products.map((product) => {
     const { productId, instaBuy, instaSell, profitPerFlip, flipsPerHour, profitPerHour } = product;
     const formattedName = itemsData ? formatName(productId, itemsData) : productId;
     return [
-      <CopyButton buttonText={formattedName} copyText={"/bz ".concat(formattedName)} />,
+      <CopyButton buttonText={formattedName} copyText={`/bz ${formattedName}`} />,
       instaBuy ? formatCoins(instaBuy) : "N/A",
       instaSell ? formatCoins(instaSell) : "N/A",
       profitPerFlip ? formatCoins(profitPerFlip) : "N/A",
@@ -188,11 +150,6 @@ export default function Bazaar() {
     <>
       <Header />
       <h1>Bazaar</h1>
-      <ul>
-        <li><TaxButton handleClick={() => setTax(0.01)} tax={0.01} isDisabled={tax === 0.01} /></li>
-        <li><TaxButton handleClick={() => setTax(0.01125)} tax={0.01125} isDisabled={tax === 0.01125} /></li>
-        <li><TaxButton handleClick={() => setTax(0.0125)} tax={0.0125} isDisabled={tax === 0.0125} /></li>
-      </ul>
       <Table headers={headers} data={data} />
       <Footer />
     </>
