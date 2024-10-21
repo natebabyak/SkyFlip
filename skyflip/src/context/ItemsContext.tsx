@@ -17,7 +17,7 @@ interface ItemsData {
 
 const ItemsContext = createContext<ItemsData | null>(null);
 
-export function ItemsProvider({ children }: { children: ReactNode }): JSX.Element {
+export function ItemsProvider({ children }: { children: ReactNode }): ReactNode {
   const [itemsData, setItemsData] = useState<ItemsData | null>(null);
 
   async function fetchItemsData(): Promise<void> {

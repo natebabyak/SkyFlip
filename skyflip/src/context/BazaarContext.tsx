@@ -31,7 +31,7 @@ interface BazaarData {
 
 const BazaarContext = createContext<BazaarData | null>(null);
 
-export function BazaarProvider({ children }: { children: ReactNode }): JSX.Element {
+export function BazaarProvider({ children }: { children: ReactNode }): ReactNode {
   const [bazaarData, setBazaarData] = useState<BazaarData | null>(null);
 
   async function fetchBazaarData(): Promise<void> {
