@@ -1,90 +1,31 @@
-import { useEffect, useState } from "react";
-import Footer from "../../components/footer/Footer.tsx";
-import Header from "../../components/header/Header.tsx";
-import Table from "../../components/table/Table.tsx";
-import formatCoins from "../../utils/formatCoins.ts";
-import formatName from "../../utils/formatName.ts";
-import formatNumber from "../../utils/formatNumber.ts";
-import CopyButton from "../../components/copyButton/CopyButton.tsx";
-import Loading from "../../components/loading/Loading.tsx";
-import TaxButtons from "../../components/taxButtons/TaxButtons.tsx";
+import { useState, useContext, ReactNode } from 'react';
+import Footer from '../../components/footer/Footer.tsx';
+import Header from '../../components/header/Header.tsx';
+import Table from '../../components/table/Table.tsx';
+import formatCoins from '../../utils/formatCoins.ts';
+import formatName from '../../utils/formatName.ts';
+import formatNumber from '../../utils/formatNumber.ts';
+import CopyButton from '../../components/copyButton/CopyButton.tsx';
+import Loading from '../../components/loading/Loading.tsx';
+import TaxButtons from '../../components/taxButtons/TaxButtons.tsx';
+import BazaarContext from '../../context/BazaarContext.tsx';
+import ItemsContext from '../../context/ItemsContext.tsx';
 
 const HOURS_PER_WEEK = 168;
 
-interface BazaarData {
-  success: boolean;
-  lastUpdated: number;
-  products: {
-    product_id: string;
-    sell_summary: {
-      amount: number;
-      pricePerUnit: number;
-      orders: number;
-    }[];
-    buy_summary: {
-      amount: number;
-      pricePerUnit: number;
-      orders: number;
-    }[];
-    quick_status: {
-      productId: string;
-      sellPrice: number;
-      sellVolume: number;
-      sellMovingWeek: number;
-      sellOrders: number;
-      buyPrice: number;
-      buyVolume: number;
-      buyMovingWeek: number;
-      buyOrders: number;
-    };
-  }[];
-}
-
-interface ItemsData {
-  success: boolean;
-  lastUpdated: number;
-  items: {
-    material: string;
-    durability: number;
-    skin: string
-    name: string;
-    category: string;
-    tier: string;
-    npc_sell_price: string;
-    id: string;
-  }[];
-}
-
 type Tax = 0.01 | 0.01125 | 0.0125;
 
-export default function Bazaar() {
-  const [bazaarData, setBazaarData] = useState<BazaarData | null>(null);
-  const [itemsData, setItemsData] = useState<ItemsData | null>(null);
+export default function Bazaar(): ReactNode {
+  const bazaarContext = useContext(BazaarContext);
+  const itemsContext = useContext(ItemsContext);
   const [tax, setTax] = useState<Tax>(0.01125);
 
-  async function fetchBazaarData() {
-    const url = "https://api.hypixel.net/v2/skyblock/bazaar";
-    const response = await fetch(url);
-    const json = await response.json();
-    setBazaarData(json);
-  }
+  if (!bazaarContext || !itemsContext) return <Loading />;
 
-  async function fetchItemsData() {
-    const url = "https://api.hypixel.net/v2/resources/skyblock/items";
-    const response = await fetch(url);
-    const json = await response.json();
-    setItemsData(json);
-  }
+  const { bazaarData } = bazaarContext;
+  const { itemsData } = itemsContext;
 
-  useEffect(() => {
-    fetchBazaarData();
-    fetchItemsData();
-
-    const interval = setInterval(fetchBazaarData, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (!bazaarData || !itemsData) return <Loading />
+  if (!bazaarData || !itemsData) return <Loading />;
 
   const headers = [
     "Item",

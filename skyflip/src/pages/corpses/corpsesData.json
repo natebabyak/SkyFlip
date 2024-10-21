@@ -1,6 +1,9 @@
 {
-  "corpsesData": {
-    "lapis": {
+  "corpses": [
+    {
+      "imageUrl": "https://wiki.hypixel.net/images/a/a0/SkyBlock_entities_corpse_lapis.png",
+      "name": "Lapis",
+      "key": null,
       "numDrops": 4.5,
       "totalWeight": 24890,
       "dyeChance": 0.000004,
@@ -267,7 +270,10 @@
         }
       ]
     },
-    "umber": {
+    {
+      "imageUrl": "https://wiki.hypixel.net/images/3/38/SkyBlock_entities_corpse_yog.png",
+      "name": "Umber",
+      "key": "UMBER_KEY",
       "numDrops": 5.5,
       "totalWeight": 12195,
       "dyeChance": 0.00001,
@@ -449,7 +455,10 @@
         }
       ]
     },
-    "tungsten": {
+    {
+      "imageUrl": "https://wiki.hypixel.net/images/0/0a/SkyBlock_entities_corpse_mineral.png",
+      "name": "Tungsten",
+      "key": "TUNGSTEN_KEY",
       "numDrops": 5.5,
       "totalWeight": 12195,
       "dyeChance": 0.00001,
@@ -631,7 +640,10 @@
         }
       ]
     },
-    "vanguard": {
+    {
+      "imageUrl": "https://wiki.hypixel.net/images/c/c5/SkyBlock_entities_corpse_vanguard.png",
+      "name": "Vanguard",
+      "key": "SKELETON_KEY",
       "numDrops": 6.5,
       "totalWeight": 2399,
       "dyeChance": 0.0001,
@@ -788,5 +800,5 @@
         }
       ]
     }
-  }
+  ]
 }
