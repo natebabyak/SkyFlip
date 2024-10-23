@@ -8,12 +8,14 @@ import ItemsContext from "../../context/ItemsContext.tsx";
 import formatCoins from "../../utils/formatCoins.ts";
 import formatName from "../../utils/formatName.ts";
 import corpsesData from "./corpsesData.json";
+import AuctionsContext from "../../context/AuctionsContext.tsx";
 
 export default function Corpses(): ReactNode {
   const bazaarData = useContext(BazaarContext);
   const itemsData = useContext(ItemsContext);
+  const auctionsData = useContext(AuctionsContext);
 
-  if (!bazaarData || !itemsData) return <Loading />;
+  if (!bazaarData || !itemsData || !auctionsData) return <Loading />;
 
   const headers = [
     "Image",
