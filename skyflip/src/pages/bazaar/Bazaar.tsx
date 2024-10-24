@@ -22,14 +22,7 @@ export default function Bazaar(): ReactNode {
 
   if (!bazaarData || !itemsData) return <Loading />;
 
-  const headers = [
-    "Item",
-    "Insta-Buy",
-    "Insta-Sell",
-    "Profit",
-    "Flips/h",
-    "Coins/h"
-  ];
+  const headers = ["Item", "Insta-Buy", "Insta-Sell", "Profit", "Flips/h", "Coins/h"];
 
   const products = Object.values(bazaarData.products).map((product) => {
     const { product_id, buy_summary, sell_summary, quick_status } = product;

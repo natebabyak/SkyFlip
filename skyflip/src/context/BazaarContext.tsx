@@ -1,44 +1,51 @@
 import { ReactNode, createContext, useEffect, useState } from 'react';
 
+interface SellSummary {
+  amount: number;
+  pricePerUnit: number;
+  orders: number;
+}
+
+interface BuySummary {
+  amount: number;
+  pricePerUnit: number;
+  orders: number;
+}
+
+interface QuickStatus {
+  productId: string;
+  sellPrice: number;
+  sellVolume: number;
+  sellMovingWeek: number;
+  sellOrders: number;
+  buyPrice: number;
+  buyVolume: number;
+  buyMovingWeek: number;
+  buyOrders: number;
+}
+
+interface Product {
+  product_id: string;
+  sell_summary: SellSummary[];
+  buy_summary: BuySummary[];
+  quick_status: QuickStatus;
+}
+
 interface BazaarData {
   success: boolean;
   lastUpdated: number;
-  products: {
-    product_id: string;
-    sell_summary: {
-      amount: number;
-      pricePerUnit: number;
-      orders: number;
-    }[];
-    buy_summary: {
-      amount: number;
-      pricePerUnit: number;
-      orders: number;
-    }[];
-    quick_status: {
-      productId: string;
-      sellPrice: number;
-      sellVolume: number;
-      sellMovingWeek: number;
-      sellOrders: number;
-      buyPrice: number;
-      buyVolume: number;
-      buyMovingWeek: number;
-      buyOrders: number;
-    };
-  }[];
+  products: Product[];
 }
 
-const BazaarContext = createContext<BazaarData | null>(null);
+export const BazaarContext = createContext<BazaarData | null>(null);
 
-export function BazaarProvider({ children }: { children: ReactNode }): ReactNode {
+export function BazaarProvider({ children }: { children: ReactNode }) {
   const [bazaarData, setBazaarData] = useState<BazaarData | null>(null);
 
-  async function fetchBazaarData(): Promise<void> {
+  async function fetchBazaarData() {
     const url = "https://api.hypixel.net/v2/skyblock/bazaar";
     const response = await fetch(url);
-    const data: BazaarData = await response.json();
-    setBazaarData(data);
+    setBazaarData(await response.json());
   }
 
   useEffect(() => {
@@ -52,6 +59,4 @@ export function BazaarProvider({ children }: { children: ReactNode }): ReactNode
       {children}
     </BazaarContext.Provider>
   );
-};
-
-export default BazaarContext;
+}
