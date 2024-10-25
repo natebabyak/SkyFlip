@@ -3,12 +3,12 @@ import Footer from "../../components/footer/Footer.tsx";
 import Header from "../../components/header/Header.tsx";
 import Loading from "../../components/loading/Loading.tsx";
 import Table from "../../components/table/Table.tsx";
-import BazaarContext from "../../context/BazaarContext.tsx";
-import ItemsContext from "../../context/ItemsContext.tsx";
+import { BazaarContext } from "../../context/BazaarContext.tsx";
+import { ItemsContext } from "../../context/ItemsContext.tsx";
 import formatCoins from "../../utils/formatCoins.ts";
 import formatName from "../../utils/formatName.ts";
 import corpsesData from "./corpsesData.json";
-import AuctionsContext from "../../context/AuctionsContext.tsx";
+import { AuctionsContext } from "../../context/AuctionsContext.tsx";
 
 export default function Corpses(): ReactNode {
   const bazaarData = useContext(BazaarContext);

@@ -19,14 +19,14 @@ interface ItemsData {
 
 export const ItemsContext = createContext<ItemsData | null>(null);
 
-export function ItemsProvider({ children }: { children: ReactNode }) {
+export function ItemsProvider({ children }: { children: ReactNode }): JSX.Element {
   const [itemsData, setItemsData] = useState<ItemsData | null>(null);
 
   async function fetchItemsData() {
-    if (itemsData) return;
-    const url = "https://api.hypixel.net/v2/resources/skyblock/items";
+    const url = 'https://api.hypixel.net/v2/resources/skyblock/items';
     const response = await fetch(url);
-    setItemsData(await response.json());
+    const data: ItemsData = await response.json();
+    setItemsData(data);
   }
 
   useEffect(() => {

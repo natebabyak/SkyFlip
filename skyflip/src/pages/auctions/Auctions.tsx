@@ -3,9 +3,9 @@ import Footer from '../../components/footer/Footer.tsx';
 import Header from '../../components/header/Header.tsx';
 import Loading from '../../components/loading/Loading.tsx';
 import Table from '../../components/table/Table.tsx';
-import AuctionsContext from '../../context/AuctionsContext.tsx';
+import { AuctionsContext } from '../../context/AuctionsContext.tsx';
 
-export default function Bazaar(): ReactNode {
+export default function Auctions(): ReactNode {
   const auctionsData = useContext(AuctionsContext);
 
   if (!auctionsData) return <Loading />;
@@ -15,11 +15,11 @@ export default function Bazaar(): ReactNode {
     "lbin"
   ];
 
-  const data = Object.values(auctionsData).map((auction) => {
+  const data = Object.values(auctionsData.auctions).map((auction) => {
     if (auction.bin) {
       return [
         auction.item_name,
-        auction.starting_bid,
+        auction.starting_bid
       ];
     }
     return null;

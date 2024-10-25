@@ -39,13 +39,14 @@ interface BazaarData {
 
 export const BazaarContext = createContext<BazaarData | null>(null);
 
-export function BazaarProvider({ children }: { children: ReactNode }) {
+export function BazaarProvider({ children }: { children: ReactNode }): JSX.Element {
   const [bazaarData, setBazaarData] = useState<BazaarData | null>(null);
 
-  async function fetchBazaarData() {
-    const url = "https://api.hypixel.net/v2/skyblock/bazaar";
+  async function fetchBazaarData(): Promise<void> {
+    const url = 'https://api.hypixel.net/v2/skyblock/bazaar';
     const response = await fetch(url);
-    setBazaarData(await response.json());
+    const data: BazaarData = await response.json();
+    setBazaarData(data);
   }
 
   useEffect(() => {
