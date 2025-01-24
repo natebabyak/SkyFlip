@@ -398,6 +398,3 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-
-/SkyFlip/nuget.config
-/SkyFlip/skyflip.esproj
