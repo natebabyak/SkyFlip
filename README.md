@@ -1,37 +1,34 @@
 # SkyFlip
 
-SkyFlip is a website for real-time Hypixel SkyBlock data analysis designed to maximize profits.
+SkyFlip is a platform designed for real-time Hypixel SkyBlock data analysis, focused on maximizing profits through intelligent decision-making.
 
-## Features
+## Released Features
 
-These features have been released but are subject to changes.
+These features are available for use but may undergo future changes.
 
 ### Bazaar Flipper
 
-The **Bazaar Flipper** shows the best items to flip on the Bazaar.
-
-#### Usage
-
-* Tax
+The **Bazaar Flipper** identifies and displays the most profitable items to flip on the Bazaar, helping players make informed decisions.
 
 ## Features in Development
 
-These features are currently in development. 
+These features are actively being worked on and will be released in future updates.
 
-## Upcoming Features
+## Planned Features
 
-These features are currently being developed
+These features are on the roadmap and may be developed at a later stage.
 
 * Auction House Flipper
-* Crafting Calculator
+* Bits Calculator
+* Copper Calculator
+* Frozen Corpses Calculator
+* Crafting Flipper
 * Fann Calculator
 * Forge Calculator
-* Frozen Corpses Calculator
 * Kat Calculator
 * Pet Calculator
 
 # Links
 
-* [SkyFlip](https://skyflip.net)
 * [Hypixel API](https://api.hypixel.net)
 * [GitHub](https://github.com/natebabyak/SkyFlip)
