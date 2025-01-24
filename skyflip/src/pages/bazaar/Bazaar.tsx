@@ -11,7 +11,9 @@ import formatCoins from '../../utils/formatCoins.ts';
 import formatName from '../../utils/formatName.ts';
 import formatNumber from '../../utils/formatNumber.ts';
 
+const HEADERS = ["Item", "Insta-Buy", "Insta-Sell", "Profit", "Flips/h", "Coins/h"];
 const HOURS_PER_WEEK = 168;
+const MINIMUM_TO_OUTBID = 0.1;
 
 type Tax = 0.01 | 0.01125 | 0.0125;
 
@@ -22,23 +24,32 @@ export default function Bazaar(): ReactNode {
 
   if (!bazaarData || !itemsData) return <Loading />;
 
-  const headers = ["Item", "Insta-Buy", "Insta-Sell", "Profit", "Flips/h", "Coins/h"];
-
-  const products = Object.values(bazaarData.products).map((product) => {
-    const { product_id, buy_summary, sell_summary, quick_status } = product;
-    const { buyMovingWeek, sellMovingWeek } = quick_status;
-
+  const products = Object.values(bazaarData.products).map(({ product_id, buy_summary, sell_summary, quick_status }) => {
     if (buy_summary.length > 0 && sell_summary.length > 0) {
-      const instaBuy = buy_summary[0].pricePerUnit;
-      const instaSell = sell_summary[0].pricePerUnit;
-      const profitPerFlip = (instaBuy - 0.1) * (1 - tax) - (instaSell + 0.1);
-      const flipsPerHour = 1 / (1 / (buyMovingWeek / HOURS_PER_WEEK) + 1 / (sellMovingWeek / HOURS_PER_WEEK));
+      const { buyMovingWeek, sellMovingWeek } = quick_status;
+
+      const buyPrice = buy_summary[0].pricePerUnit;
+
+      const sellPrice = sell_summary[0].pricePerUnit;
+
+      const sellOrderPrice = buyPrice - MINIMUM_TO_OUTBID;
+      const buyOrderPrice = sellPrice + MINIMUM_TO_OUTBID;
+      const afterTaxMultiplier = 1 - tax;
+      const profitPerFlip = sellOrderPrice * afterTaxMultiplier - buyOrderPrice;
+
+      const boughtPerHour = buyMovingWeek / HOURS_PER_WEEK;
+      const soldPerHour = sellMovingWeek / HOURS_PER_WEEK;
+      const hoursPerSell = 1 / boughtPerHour;
+      const hoursPerBuy = 1 / soldPerHour;
+      const hoursPerFlip = hoursPerSell + hoursPerBuy;
+      const flipsPerHour = 1 / hoursPerFlip;
+
       const profitPerHour = profitPerFlip * flipsPerHour;
 
       return {
         product_id,
-        instaBuy,
-        instaSell,
+        buyPrice,
+        sellPrice,
         profitPerFlip,
         flipsPerHour,
         profitPerHour
@@ -48,13 +59,13 @@ export default function Bazaar(): ReactNode {
   }).filter((product) => product !== null).sort((a, b) => b.profitPerHour - a.profitPerHour);
 
   const data = products.map((product) => {
-    const { product_id, instaBuy, instaSell, profitPerFlip, flipsPerHour, profitPerHour } = product;
+    const { product_id, buyPrice, sellPrice, profitPerFlip, flipsPerHour, profitPerHour } = product;
     const name = formatName(product_id, itemsData);
 
     return [
       <CopyButton buttonText={name} copyText={`/bz ${name}`} />,
-      formatCoins(instaBuy),
-      formatCoins(instaSell),
+      formatCoins(buyPrice),
+      formatCoins(sellPrice),
       formatCoins(profitPerFlip),
       formatNumber(flipsPerHour),
       formatCoins(profitPerHour)
@@ -66,7 +77,7 @@ export default function Bazaar(): ReactNode {
       <Header />
       <h1>Bazaar</h1>
       <TaxButtons tax={tax} setTax={setTax} />
-      <Table headers={headers} data={data} />
+      <Table headers={HEADERS} data={data} />
       <Footer />
     </>
   );
