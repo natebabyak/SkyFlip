@@ -1,6 +1,6 @@
 # SkyFlip
 
-SkyFlip is the best website for real-time Hypixel SkyBlock data analysis designed to maximize profits.
+SkyFlip is a website for real-time Hypixel SkyBlock data analysis designed to maximize profits.
 
 ## Features
 
