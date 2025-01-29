@@ -9,6 +9,7 @@
   <li><a href="#about">About</a></li>
   <li><a href="#usage">Usage</a></li>
   <ol>
+    <li><a href="#installation">Installation</a></li>
     <li><a href="#features">Features</a></li>
   </ol>
   <li><a href="#license">License</a></li>
@@ -29,6 +30,27 @@ SkyFlip is an analytical tools website I built to learn and explore React, TypeS
 
 <!-- USAGE -->
 ## Usage
+
+<!-- INSTALLATION -->
+### Installation
+
+#### 1. Prerequisites
+
+```
+npm install -g npm
+```
+
+#### 2. Clone the Repository
+
+```
+git clone https://github.com/natebabyak/SkyFlip.git
+```
+
+#### 3. Install Dependencies
+
+```
+npm i
+```
 
 <!-- FEATURES -->
 ### Features
