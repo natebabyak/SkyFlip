@@ -24,7 +24,7 @@
 <!-- ABOUT -->
 ## About
 
-SkyFlip is an analytical tools website I built to learn and explore React, TypeScript, and other web development technologies. This project gave me the opportunity to deepen my understanding of these tools while experimenting with dynamic features and user-friendly functionality. As a hands-on exploration into web development, SkyFlip reflects my curiosity and willingness to learn.
+SkyFlip is an analytical tools website I built to learn React, TypeScript, and other web technologies. This project helped me explore these tools while experimenting with dynamic features and usability. It was a hands-on way to expand my knowledge of web development.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
