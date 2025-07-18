@@ -4,6 +4,13 @@
 <h1 align="center">SkyFlip</h1>
 <p align="center">An analytical tools website made with React and TypeScript</p>
 
+> [!NOTE]
+> ## Deprecation Notice
+> 
+> **As of July 18, 2025, this project has been superseded by [Skyrocket](https://github.com/natebabyak/skyrocket)**
+> 
+> This repository remains public for reference but is no longer maintained and will not receive updates.
+
 <!-- TABLE OF CONTENTS -->
 <ol>
   <li><a href="#about">About</a></li>
